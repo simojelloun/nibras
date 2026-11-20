@@ -15,6 +15,7 @@ La propriétaire du projet travaille en français : réponds-lui en français.
 | `server/wrangler.jsonc` | Config de déploiement, reliée à la base D1 `islamquizz`. |
 | `android/`, `ios/` | Projets natifs générés par Capacitor 8. Ne pas éditer `*/public/` à la main. |
 | `data/ayat.json` | 70 versets pour « آية اليوم » : `[sourate, verset, explication]`. Après modification : `node scripts/build-ayat.mjs` (recopie le texte exact depuis `quran-json` dans le tableau `AYAT` de `index.html`). |
+| `scripts/export-questions.mjs`, `import-questions.mjs` | Relecture : export des questions rédigées (pas les générées) vers `relecture/questions-redigees.csv`, puis réimport du CSV corrigé dans `Q` (`--essai` pour voir sans écrire). Suivi de la colonne « vérifié » dans `data/verifications.json`. |
 | `scripts/check-questions.mjs` | Vérifie la banque `Q` (format, thèmes, niveaux, doublons, apostrophes) et compte les questions. À lancer après toute modification de `Q`. |
 | `Deployer.command` | Script de mise en ligne (npm install, wrangler login, wrangler deploy). |
 
@@ -47,7 +48,9 @@ Dans `www/index.html`, tableau `Q`, une ligne par question :
 
 État : 1 373 questions. Environ 580 questions de Coran sont générées depuis le texte du Mushaf
 (paquet npm `quran-json`, source quranenc.com). Les 790 autres ont été rédigées de mémoire par
-une IA, sans vérification contre les sources : elles restent à relire.
+une IA, sans vérification contre les sources : elles restent à relire. Les questions générées sont
+toutes après le commentaire « أسئلة القرآن المولَّدة من نصّ المصحف » dans `Q` : ajouter les nouvelles
+questions rédigées AVANT ce repère.
 
 ## Règles de contenu (importantes)
 
