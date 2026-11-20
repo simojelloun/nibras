@@ -3,4 +3,4 @@
 // 2. Collez ici l'adresse affichée par « wrangler deploy », sans barre finale.
 //    Exemple : window.IQ_API = "https://islamquizz.mon-compte.workers.dev";
 // Laissez vide pour la version web servie par ce même serveur.
-window.IQ_API = "";
+window.IQ_API = "https://islamquizz.islamquizz-server.workers.dev";
