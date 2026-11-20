@@ -14,7 +14,8 @@ La propriétaire du projet travaille en français : réponds-lui en français.
 | `server/schema.sql` | Tables D1 : `players`, `sessions`, `groups`, `group_members`, `duels`. |
 | `server/wrangler.jsonc` | Config de déploiement, reliée à la base D1 `islamquizz`. |
 | `android/`, `ios/` | Projets natifs générés par Capacitor 8. Ne pas éditer `*/public/` à la main. |
-| `data/ayat.json` | 70 versets pour « l'âya du jour » : `[sourate, verset, explication]`. Pas encore intégré. |
+| `data/ayat.json` | 70 versets pour « آية اليوم » : `[sourate, verset, explication]`. Après modification : `node scripts/build-ayat.mjs` (recopie le texte exact depuis `quran-json` dans le tableau `AYAT` de `index.html`). |
+| `scripts/check-questions.mjs` | Vérifie la banque `Q` (format, thèmes, niveaux, doublons, apostrophes) et compte les questions. À lancer après toute modification de `Q`. |
 | `Deployer.command` | Script de mise en ligne (npm install, wrangler login, wrangler deploy). |
 
 ## Commandes
@@ -51,7 +52,7 @@ une IA, sans vérification contre les sources : elles restent à relire.
 ## Règles de contenu (importantes)
 
 - Ne jamais écrire un verset de mémoire : le prendre dans `quran-json` (`dist/quran.json`) par
-  numéro de sourate et de verset.
+  numéro de sourate et de verset, tel quel (pas de normalisation Unicode).
 - Ne pas inventer de hadith ni de référence. Une question sans source sûre ne s'ajoute pas.
 - Éviter les points de divergence entre écoles ; sinon le dire dans la référence.
 - Toujours signaler à la propriétaire ce qui n'a pas été vérifié.
@@ -69,7 +70,6 @@ une IA, sans vérification contre les sources : elles restent à relire.
 
 ## Demandes en attente
 
-- Âya du jour en tête de page d'accueil, avec son explication (`data/ayat.json`).
 - Réorganisation en 4 menus (Coran, Sunna d'al-Bukhârî et Muslim, Compagnons, Batailles et
   conquêtes) avec un classement par menu et par niveau : étudiée puis suspendue par la propriétaire.
 - Limitation des tentatives sur `/api/login` et `/api/register`.
