@@ -1,0 +1,47 @@
+# Dépendances
+node_modules/
+
+# Wrangler (cache local, base D1 locale, journaux)
+.wrangler/
+.dev.vars
+*.log
+
+# macOS / éditeurs
+.DS_Store
+.idea/
+.vscode/
+
+# Android : builds et fichiers générés
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+*.apk
+*.aab
+*.aar
+*.ap_
+*.dex
+# Copie de www/ faite par « npx cap sync » (ne pas éditer à la main)
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+
+# Clés de signature : ne jamais les mettre dans git
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+
+# iOS : builds et fichiers générés
+ios/App/build/
+ios/DerivedData/
+ios/App/Pods/
+xcuserdata/
+*.xcuserstate
+*.ipa
+*.dSYM.zip
+# Copie de www/ faite par « npx cap sync » (ne pas éditer à la main)
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+ios/App/App/config.xml

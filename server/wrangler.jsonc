@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "islamquizz",
+  "main": "./src/worker.js",
+  "compatibility_date": "2026-11-01",
+  // La version web de l'application est servie depuis ../www (le même dossier que l'application mobile).
+  "assets": {
+    "directory": "../www",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "islamquizz",
+      "database_id": "835af63a-3997-402f-aa06-7382a9708058"
+    }
+  ]
+}

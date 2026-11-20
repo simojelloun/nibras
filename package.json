@@ -1,0 +1,23 @@
+{
+  "name": "islamquizz-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "IslamQuizz (نِبراس) — application Android et iOS (Capacitor)",
+  "scripts": {
+    "sync": "cap sync",
+    "android": "cap sync android && cap open android",
+    "ios": "cap sync ios && cap open ios",
+    "icons": "capacitor-assets generate --iconBackgroundColor '#0c3533' --iconBackgroundColorDark '#0c3533' --splashBackgroundColor '#0c3533' --splashBackgroundColorDark '#0c3533'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/ios": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.2",
+    "@fontsource/amiri": "^5.3.0"
+  }
+}
