@@ -22,6 +22,8 @@ const MAX_XP_STEP = 3000;     // gain maximal accepté par envoi
 const PBKDF2_ROUNDS = 100000;
 const THEMES = ["q", "h", "s", "p", "f", "n", "t", "a"];
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const RATE_MAX = 10;                // tentatives acceptées par adresse IP…
+const RATE_WINDOW = 10 * 60 * 1000; // …sur 10 minutes glissantes (séparément pour login et register)
 
 const CORS = {
   "access-control-allow-origin": "*",
@@ -36,7 +38,7 @@ const json = (data, status = 200) =>
   });
 
 class ApiError extends Error {
-  constructor(status, code) { super(code); this.status = status; this.code = code; }
+  constructor(status, code, headers) { super(code); this.status = status; this.code = code; this.headers = headers; }
 }
 const fail = (status, code) => { throw new ApiError(status, code); };
 
@@ -123,8 +125,25 @@ async function auth(req, env) {
   return row;
 }
 
+// ---------- limitation des tentatives ----------
+// Compte chaque tentative (réussie ou non) par adresse IP dans D1, sur une fenêtre glissante.
+// En production, Cloudflare fournit l'adresse dans CF-Connecting-IP (le client ne peut pas la forger).
+async function rateLimit(req, env, action) {
+  const ip = req.headers.get("cf-connecting-ip") || "inconnue";
+  const key = `${action}:${ip}`;
+  const now = Date.now(), since = now - RATE_WINDOW;
+  await env.DB.prepare("DELETE FROM attempts WHERE key = ? AND ts <= ?").bind(key, since).run();
+  const row = await env.DB.prepare("SELECT COUNT(*) AS n, MIN(ts) AS first FROM attempts WHERE key = ?").bind(key).first();
+  if (row.n >= RATE_MAX) {
+    const retry = Math.max(1, Math.ceil((row.first + RATE_WINDOW - now) / 1000));
+    throw new ApiError(429, "rate_limited", { "retry-after": String(retry) });
+  }
+  await env.DB.prepare("INSERT INTO attempts (key, ts) VALUES (?, ?)").bind(key, now).run();
+}
+
 // ---------- comptes ----------
 async function register(req, env) {
+  await rateLimit(req, env, "register");
   const body = await readBody(req);
   const { pseudo, key } = checkPseudo(body.pseudo);
   const password = String(body.password ?? "");
@@ -142,6 +161,7 @@ async function register(req, env) {
   return json({ id, pseudo, token: await openSession(env, id) }, 201);
 }
 async function login(req, env) {
+  await rateLimit(req, env, "login");
   const body = await readBody(req);
   const key = String(body.pseudo ?? "").normalize("NFKC").replace(/\s+/g, " ").trim().toLowerCase();
   const password = String(body.password ?? "");
@@ -309,7 +329,11 @@ export default {
     try {
       return await route(req, env, pathname);
     } catch (e) {
-      if (e instanceof ApiError) return json({ error: e.code }, e.status);
+      if (e instanceof ApiError) {
+        const res = json({ error: e.code }, e.status);
+        for (const [k, v] of Object.entries(e.headers || {})) res.headers.set(k, v);
+        return res;
+      }
       return json({ error: "server" }, 500);
     }
   },

@@ -55,3 +55,11 @@ CREATE TABLE IF NOT EXISTS duels (
 );
 CREATE INDEX IF NOT EXISTS duels_a ON duels (a_id);
 CREATE INDEX IF NOT EXISTS duels_b ON duels (b_id);
+
+-- Limitation des tentatives sur /api/login et /api/register (une ligne par tentative,
+-- effacées après 10 minutes). key = « login:<ip> » ou « register:<ip> ».
+CREATE TABLE IF NOT EXISTS attempts (
+  key TEXT NOT NULL,
+  ts  INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS attempts_key_ts ON attempts (key, ts);

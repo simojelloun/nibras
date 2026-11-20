@@ -25,6 +25,7 @@ La propriétaire du projet travaille en français : réponds-lui en français.
 ```sh
 cd server && npm install && npx wrangler deploy     # mettre en ligne (web + API)
 cd server && npm run db:local && npm run dev        # tester en local sur http://localhost:8787
+cd server && npm test                               # tests de l'API (serveur local jetable)
 npm install && npx cap sync                         # recopier www/ dans android/ et ios/
 npx cap open android        # ou : npx cap open ios
 ```
@@ -72,10 +73,12 @@ questions rédigées AVANT ce repère.
 - Couche serveur : bloc « الخادم » (`call`, `signUp`, `signIn`, `push`, `fetchBoard`).
   `ONLINE` vaut `true` dans cette version.
 - Les scores sont calculés côté client ; le serveur borne seulement les valeurs.
+- `/api/login` et `/api/register` : 10 tentatives par IP sur 10 minutes glissantes (table D1
+  `attempts`, compteurs séparés), au-delà 429 `rate_limited` avec `Retry-After`. Toute nouvelle
+  table : `npm run db:remote` AVANT `wrangler deploy`.
 
 ## Demandes en attente
 
 - Réorganisation en 4 menus (Coran, Sunna d'al-Bukhârî et Muslim, Compagnons, Batailles et
   conquêtes) avec un classement par menu et par niveau : étudiée puis suspendue par la propriétaire.
-- Limitation des tentatives sur `/api/login` et `/api/register`.
 - Identifiant d'application définitif (`com.islamquizz.nibras` est provisoire).
